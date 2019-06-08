@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SDK Components</string>
+    <string name="wait_fifty">Ожидаем 50%</string>
 </resources>
