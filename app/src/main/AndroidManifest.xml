@@ -15,16 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".okhttp.HttpActivity">
+        <activity android:name=".retrofit.RetrofitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".asynctask.AsyncDemoActivity">
+        <activity android:name=".okhttp.HttpActivity">
         </activity>
-        <activity android:name=".background.BgActivity"></activity>
+        <activity android:name=".asynctask.AsyncDemoActivity"></activity>
+        <activity android:name=".background.BgActivity" />
     </application>
 
 </manifest>
