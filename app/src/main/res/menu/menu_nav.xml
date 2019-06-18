@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/nav_get_post"
+            android:icon="@android:drawable/ic_input_get"
+            android:title="@string/get_posts" />
+
+        <item
+            android:id="@+id/nav_get_comment"
+            android:icon="@android:drawable/ic_input_get"
+            android:title="@string/get_comments" />
+
+        <item
+            android:id="@+id/nav_post_json"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/post_json" />
+
+        <item
+            android:id="@+id/nav_post_url"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/post_url" />
+
+        <item
+            android:id="@+id/nav_post_map"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/post_map" />
+
+        <item
+            android:id="@+id/nav_put"
+            android:icon="@android:drawable/ic_menu_set_as"
+            android:title="@string/put" />
+
+        <item
+            android:id="@+id/nav_patch"
+            android:icon="@android:drawable/ic_menu_set_as"
+            android:title="@string/patch" />
+
+        <item
+            android:id="@+id/nav_delete"
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/delete" />
+    </group>
+</menu>

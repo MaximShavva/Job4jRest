@@ -5,4 +5,18 @@
     <string name="posts">Posts</string>
     <string name="comments">Comments</string>
     <string name="server_response">Server Response:</string>
+    <string name="nav_open_drawer">Open navigation drawer</string>
+    <string name="nav_close_drawer">Close navigation drawer</string>
+    <string name="get_posts">GET posts</string>
+    <string name="get_comments">GET comments</string>
+    <string name="delete">DELETE</string>
+    <string name="post_json">POST JSon</string>
+    <string name="post_url">POST URL</string>
+    <string name="post_map">POST Map</string>
+    <string name="put">PUT</string>
+    <string name="patch">PATCH</string>
+    <string name="hint_user_id">User ID</string>
+    <string name="hint_post_title">Input Post Title</string>
+    <string name="hint_post_body">Input Post Body</string>
+    <string name="dialog_caption">Input your post fields:</string>
 </resources>

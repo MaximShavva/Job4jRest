@@ -11,11 +11,25 @@ import com.google.gson.annotations.SerializedName;
 public class Post {
 
     private int userId;
-    private int id;
+
+    /**
+     * чтобы gson игнорировал объекты равные null,
+     * используем обёрточный тип Integer.
+     */
+    private Integer id;
     private String title;
 
     @SerializedName("body")
     private String text;
+
+    public Post() {
+    }
+
+    public Post(int userId, String title, String text) {
+        this.userId = userId;
+        this.title = title;
+        this.text = text;
+    }
 
     public int getUserId() {
         return userId;
@@ -69,5 +83,12 @@ public class Post {
         result = 31 * result + title.hashCode();
         result = 31 * result + text.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "UserID: %s\nID: %s\nTitle: %s\nText: %s\n\n"
+                , userId, id, title, text);
     }
 }

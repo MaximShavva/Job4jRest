@@ -1,9 +1,16 @@
 package ru.j4j.retrofit;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,8 +28,11 @@ import ru.j4j.R;
  * @project Job4jRest
  * @since 14.06.2019.
  */
-public class RetrofitActivity extends AppCompatActivity implements ServerActor.InteractView {
+public class RetrofitActivity extends AppCompatActivity
+        implements ServerActor.InteractView
+        , NavigationView.OnNavigationItemSelectedListener, SendPostDialog.DataDialogReceiver {
 
+    private String TAG = "debug";
     /**
      * Тэги используем при смене фрагментов в актионости.
      */
@@ -54,6 +64,7 @@ public class RetrofitActivity extends AppCompatActivity implements ServerActor.I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrofit);
+        initViews();
         actor = new ServerActor(this);
         fm = getSupportFragmentManager();
         postsFragment = (PostsFragment) fm.findFragmentByTag(POST_TAG);
@@ -63,39 +74,99 @@ public class RetrofitActivity extends AppCompatActivity implements ServerActor.I
     }
 
     /**
-     * Колбэк вызывается при клике на кнопку POSTS.
+     * Задаём активности экшн-бар и помещаем на него кнопку выдвижения
+     * навигационной панелии.
+     * Задаём сативность слушателем кнопок навигации(GET, POST, DELETE...).
      */
-    public void postShow(View view) {
+    private void initViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this
+                , drawer
+                , toolbar
+                , R.string.nav_open_drawer
+                , R.string.nav_close_drawer);
+        toggle.syncState(); //синхронизирует кнопку toggle с состоянием панели.
+        drawer.addDrawerListener(toggle);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    /**
+     *  Выбор действий в ответ на клик по пунктам меню.
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        switch (menuItem.getItemId()) {
+            case R.id.nav_post_json:
+                SendPostDialog dialog = new SendPostDialog();
+                dialog.show(fm, "send_dialog");
+                postFragmentShow();
+                break;
+            case R.id.nav_post_url:
+                actor.onPostURLClick();
+                postFragmentShow();
+                break;
+            case R.id.nav_post_map:
+                actor.onPostMapClick();
+                postFragmentShow();
+                break;
+            case R.id.nav_get_post:
+                actor.onGetPostsButtonClick();
+                postFragmentShow();
+                break;
+            case R.id.nav_get_comment:
+                actor.onCommentButtonClick();
+                commentFragmentShow();
+                break;
+            case R.id.nav_put:
+                actor.onPutClick();
+                postFragmentShow();
+                break;
+            case R.id.nav_patch:
+                actor.onPatchClick();
+                postFragmentShow();
+                break;
+            case R.id.nav_delete:
+                actor.onDeleteClick();
+        }
+        drawer.closeDrawer(GravityCompat.START); //задвигаем меню к началу экрана
+        return true;
+    }
+
+    /**
+     * Вызывается при клике меню GET posts из метода this.onNavigationItemSelected.
+     */
+    private void postFragmentShow() {
         if (fm.findFragmentById(R.id.response_content) == null) {
             fm.beginTransaction()
                     .add(R.id.response_content, postsFragment, POST_TAG)
                     .commit();
-            actor.onPostButtonClick();
         } else {
             if (COMMENT_TAG.equals(fm.findFragmentById(R.id.response_content).getTag())) {
                 fm.beginTransaction()
                         .replace(R.id.response_content, postsFragment, POST_TAG)
                         .commit();
-                actor.onPostButtonClick();
             }
         }
     }
 
     /**
-     * Колбэк вызывается при клике на кнопку COMMENTS.
+     * Вызывается при клике меню GET comments из метода this.onNavigationItemSelected.
      */
-    public void commentShow(View view) {
+    private void commentFragmentShow() {
         if (fm.findFragmentById(R.id.response_content) == null) {
             fm.beginTransaction()
                     .add(R.id.response_content, commentFragment, COMMENT_TAG)
                     .commit();
-            actor.onCommentButtonClick();
         } else {
-            if (POST_TAG.equals(fm.findFragmentById(R.id.response_content).getTag())){
+            if (POST_TAG.equals(fm.findFragmentById(R.id.response_content).getTag())) {
                 fm.beginTransaction()
                         .replace(R.id.response_content, commentFragment, COMMENT_TAG)
                         .commit();
-                actor.onCommentButtonClick();
             }
         }
     }
@@ -116,12 +187,26 @@ public class RetrofitActivity extends AppCompatActivity implements ServerActor.I
         commentFragment.onContentChange(comments);
     }
 
+    @Override
+    public void onResponseReceive(int code) {
+        DeleteDialog dialog = new DeleteDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt("message", code);
+        dialog.setArguments(bundle);
+        dialog.show(fm, "dialog_tag");
+    }
+
     /**
      * Вызывается провайдером actor в случае ошибки.
      */
     @Override
     public void onError(String textMessage) {
         Toast.makeText(this, textMessage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDataCollected(Post post) {
+        actor.onPostJSonClick(post);
     }
 
     @Override
